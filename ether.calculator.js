@@ -10,11 +10,10 @@
 $(function () {
 	var hash = document.location.hash
 	if(hash) {
-		var params = getHashParams();
-		
-		setEtherInput('amount',1,'ether');
-		$("#input-gas").val(10000);
-		setEtherInput('gasprice',10,'szabo');
+		var params = getHashParams(); // from URL hash
+		setEtherInput('amount', params['av'], params['au']);
+		$("#input-gas").val(params['gv']);
+		setEtherInput('gasprice', params['gpv'], params['gpu']); // from URL hash
 		
 	} else {
 		setEtherInput('amount',1,'ether');
@@ -74,8 +73,7 @@ $("#dropdown-gas-subtotal li a").click(function() {
 	var unit = $(this).text();
 	var output = convertEther(gSubtotal, null); // convert
 	setEtherInput('gas-subtotal', output[unit], unit); // display in unit
-	
-	return true;
+	return true; // todo: no #
 });
 
 // Selected OUTPUT gasprice unit
@@ -83,8 +81,7 @@ $("#dropdown-cost-total li a").click(function() {
 	var unit = $(this).text();
 	var output = convertEther(gTotal, null); // convert
 	setEtherInput('cost-total', output[unit], unit);
-	
-	return true;
+	return true; // todo: no #
 });
 
 
@@ -97,6 +94,10 @@ function validate() {
 	if(!input) {
 		return;
 	}
+	
+	input['amount']['hash'] = ['av','au'];
+	input['gas']['hash'] = ['gv','gu'];
+	input['gasprice']['hash'] = ['gpv','gpu'];
 	//console.log(input);
 	setHashParams(input, false);
 	return input;
@@ -113,12 +114,13 @@ function calculate(input) {
 	var gas = input['gas'];
 	var gasprice = input['gasprice'];
 	
+	
 	// Gas subtotal
 	gSubtotal['value'] = new BigNumber(gas['value']).times(gasprice['value']);
 	gSubtotal['unit'] = gasprice['unit'];
 	gSubtotal = figureEtherUnit(gSubtotal);
 	
-	setEtherInput('gas-subtotal', gSubtotal['value'].noExponents(), gSubtotal['unit']);
+	setEtherInput('gas-subtotal', gSubtotal['value'].noExponents(), gSubtotal['unit']); // Set gas cost sub-total
 	
 	
 	// Total
@@ -128,7 +130,7 @@ function calculate(input) {
 	gTotal['unit'] = amount['unit'];
 	gTotal = figureEtherUnit(gTotal);
 	
-	setEtherInput('cost-total', gTotal['value'].noExponents(), gTotal['unit']);
+	setEtherInput('cost-total', gTotal['value'].noExponents(), gTotal['unit']); // Set total
 }
 
 

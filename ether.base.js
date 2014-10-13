@@ -5,16 +5,16 @@
 - by @jrbedard
 */
 
-var ETH_UNITS = {'wei':1e-18, 'Kwei':1e-15, 'Mwei':1e-12, 'Gwei':1e-9, 'szabo':1e-6, 'finney':1e-3, 
+const ETH_UNITS = {'wei':1e-18, 'Kwei':1e-15, 'Mwei':1e-12, 'Gwei':1e-9, 'szabo':1e-6, 'finney':1e-3, 
 	'ether':1.0, 'Kether':1e3, 'Mether':1e6, 'Gether':1e9, 'Tether':1e12
 };
 
-var GAS = {};
+const GAS = {};
 
-var BTC_UNITS = {'satoshi':1e-8, 'bit':1e-6, 'BTC':1.0};
+const BTC_UNITS = {'satoshi':1e-8, 'bit':1e-6, 'BTC':1.0};
 
 
-var SALE_PRICE = 2000.0; // Ethereum ether genesis sale, 1 BTC = 2000 ETH
+const SALE_PRICE = 2000.0; // Ethereum ether genesis sale, 1 BTC = 2000 ETH
 
 var btcprice = 0.0; // BTC
 
@@ -94,7 +94,7 @@ function setEtherInput(id, value, unit) {
 		$("#btn-"+id).html(unit+" <span class='caret'></span>");
 		
 		$("#dropdown-"+id+" li").removeClass("active");
-		$("#dropdown-"+id+" li#in-"+unit).addClass("active");
+		$("#dropdown-"+id+" li#in-"+unit).addClass("active"); // active in dd
 	}
 }
 
@@ -110,22 +110,18 @@ function validateEtherInput(ids) {
 			$("#input-"+id+"-wrap").addClass("has-error");
 			continue;
 		}
-		if(isNaN(val)) { // todo: if number!
+		if(isNaN(val)) {
 			$("#input-"+id+"-wrap").addClass("has-error");
 			continue;
 		}
-		if(val.length > 14) { // todo: if number!
+		if(val.length > 14) {
 			$("#input-"+id+"-wrap").addClass("has-error");
 			continue;
 		}
-		// cleared!
+		// ok, cleared!
 		$("#input-"+id+"-wrap").removeClass("has-error");
 		
-		// todo: if btn
 		var unit = $("#btn-"+id).val();
-		if(!unit) {
-			
-		}
 		values[id] = {value:parseFloat(val), unit:unit};		
 	}
 	if(ids.length != Object.keys(values).length) { // invalid inputs
@@ -169,11 +165,15 @@ function toggleCommas(display) {
 
 // set URL params
 function setHashParams(input, set) {
-	var hash = "";
-	$.each(input, function(id, obj) {
-		 hash="v="+new BigNumber(obj.value).noExponents()+'&u='+obj.unit;
+	var str = [];
+	$.each(input, function(id, obj) { // each field (id,obj)
+		var args = obj['hash']; // todo: not flexible!!
+		str.push(encodeURIComponent(args[0]) + "=" + encodeURIComponent(obj['value']));
+		str.push(encodeURIComponent(args[1]) + "=" + encodeURIComponent(obj['unit']));
 	});
+	var hash = str.join("&");
 	$(".shareLink").attr('href', gPageUrl+"#"+hash);
+	
 	if(set) { // actually set hash in URL
 		if(history.pushState) {
 	    	history.pushState(null,null,"#"+hash);
@@ -183,6 +183,10 @@ function setHashParams(input, set) {
 	}
 	return hash;
 }
+
+
+$(".shareLink").attr('title',"Click to generate a URL in address bar for your inputs, so you can save & share the results.");
+$('.shareLink').tooltip({'placement':'bottom'});
 
 // permanent link with hash, clicked
 $(".shareLink").click(function() {

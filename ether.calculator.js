@@ -16,18 +16,26 @@ $(function () {
 		setEtherInput('gasprice', params['gpv'], params['gpu']); // from URL hash
 		
 	} else {
-		setEtherInput('amount',1,'ether');
+		setEtherInput('amount',0,'ether');
 		$("#input-gas").val(10000);
 		setEtherInput('gasprice',10,'szabo');
 	}
 	
 	$("#input-amount").focus();
 	
-	var input = validate();
-	if(input) {
-		calculate(input);
-		$("#go-btn").removeClass('disabled');
-	}
+	
+	// Get Bitcoin price
+	getBTCprice( function(btcprice) {
+		$(".btcprice").text(btcprice);
+		$("#out-usd .input-group-addon").attr('title', "1 Bitcoin = "+btcprice+" $USD");
+		
+		var input = validate();
+		if(input) {
+			calculate(input);
+			$("#go-btn").removeClass('disabled');
+		}
+	});
+	
 });
 
 
@@ -68,7 +76,7 @@ $("#go-btn").click(function() {
 });
 
 
-// Selected OUTPUT gasprice unit
+// Selected OUTPUT subtotal unit
 $("#dropdown-gas-subtotal li a").click(function() {
 	var unit = $(this).text();
 	var output = convertEther(gSubtotal, null); // convert
@@ -76,11 +84,19 @@ $("#dropdown-gas-subtotal li a").click(function() {
 	return true; // todo: no #
 });
 
-// Selected OUTPUT gasprice unit
+// Selected OUTPUT total unit
 $("#dropdown-cost-total li a").click(function() {
 	var unit = $(this).text();
 	var output = convertEther(gTotal, null); // convert
 	setEtherInput('cost-total', output[unit], unit);
+	return true; // todo: no #
+});
+
+// Selected OUTPUT total btc unit
+$("#dropdown-cost-total-btc li a").click(function() {
+	var unit = $(this).text();
+	var output = convertBTC(gTotalBtc, null); // convert
+	setEtherInput('cost-total-btc', output[unit], unit);
 	return true; // todo: no #
 });
 
@@ -106,6 +122,7 @@ function validate() {
 
 var gSubtotal = {value:0,unit:''};
 var gTotal = {value:0,unit:''};
+var gTotalBtc = {value:0,unit:''};
 
 
 // calculate
@@ -123,6 +140,7 @@ function calculate(input) {
 	setEtherInput('gas-subtotal', gSubtotal['value'].noExponents(), gSubtotal['unit']); // Set gas cost sub-total
 	
 	
+	
 	// Total
 	var output = convertEther(gSubtotal, null); // convert
 	
@@ -131,6 +149,26 @@ function calculate(input) {
 	gTotal = figureEtherUnit(gTotal);
 	
 	setEtherInput('cost-total', gTotal['value'].noExponents(), gTotal['unit']); // Set total
+	
+	
+	
+	// Total BTC
+	var output = convertEther(gTotal, null); // convert
+	
+	var btc = new BigNumber(output['ether']).dividedBy(SALE_PRICE);
+	output = convertBTC({'value':btc, 'unit':"BTC"}, null);
+	
+	gTotalBtc['value'] = new BigNumber(output['BTC']);
+	gTotalBtc['unit'] = 'BTC';
+	gTotalBtc = figureBTCUnit(gTotalBtc);
+	
+	setEtherInput('cost-total-btc', gTotalBtc['value'].noExponents(), gTotalBtc['unit']); // Set total
+
+
+
+	// Total USD
+	var usd = new BigNumber(btc.times(btcprice));
+	setEtherInput('cost-total-usd', usd.noExponents(), "USD"); // Set total
 }
 
 

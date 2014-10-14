@@ -9,14 +9,31 @@ const ETH_UNITS = {'wei':1e-18, 'Kwei':1e-15, 'Mwei':1e-12, 'Gwei':1e-9, 'szabo'
 	'ether':1.0, 'Kether':1e3, 'Mether':1e6, 'Gether':1e9, 'Tether':1e12
 };
 
-const GAS = {};
+// GAS
+var ETH_FEES = {
+    'step':{'cost':1,'desc':"Default amount of gas to pay for an execution cycle."},
+	'stop': {'cost':0,'desc':'Nothing paid for the STOP operation.'},
+    'suicide': {'cost':0,'desc':'Nothing paid for the SUICIDE operation.'},
+    'sha3': {'cost':20,'desc':'Paid for a SHA3 operation.'},
+    'sload': {'cost':20,'desc':'Paid for a SLOAD operation.'},
+    'sstore': {'cost':100,'desc':'Paid for a normal SSTORE operation (doubled or waived sometimes).'},
+    'balance': {'cost':20,'desc':'Paid for a BALANCE operation.'},
+    'create': {'cost':100,'desc':'Paid for a CREATE operation.'},
+    'call': {'cost':20,'desc':'Paid for a CALL operation.'},
+	'memory': {'cost':1,'desc':'Paid for every additional word when expanding memory.'},
+    'txdata': {'cost':5,'desc':'Paid for every byte of data or code for a transaction.'},
+    'transaction': {'cost':500,'desc':'Paid for every transaction.'},
+};
+
 
 const BTC_UNITS = {'satoshi':1e-8, 'bit':1e-6, 'BTC':1.0};
-
 
 const SALE_PRICE = 2000.0; // Ethereum ether genesis sale, 1 BTC = 2000 ETH
 
 var btcprice = 0.0; // BTC
+
+const FIAT_UNITS = {};
+
 
 
 function getBTCprice(func) {
@@ -77,7 +94,7 @@ function convertBTC(input, options) {
 
 // figure 
 function figureBTCUnit(input) {
-	
+	return input;
 }
 
 
@@ -86,7 +103,7 @@ function figureBTCUnit(input) {
 
 // set value+unit selector
 function setEtherInput(id, value, unit) {
-	if(value) {
+	if(value || value==0) {
 		$("#input-"+id).val(value); // value
 	}
 	if(unit) {
@@ -155,9 +172,15 @@ Number.prototype.withCommas = function() {
 	return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function toggleCommas(display) {
-	if(display) {
-		//$("input").val( $(this).val()).withCommas() );
+function toggleCommas(show) {
+	if(show) {
+		$("input").each(function(index) {
+			var val = $(this).val();
+			if(val && val != "" && !isNaN(val)) {
+				console.log(val);
+				$(this).val( parseFloat(val).withCommas() );
+			}
+		});
 	}
 }
 
@@ -185,7 +208,7 @@ function setHashParams(input, set) {
 }
 
 
-$(".shareLink").attr('title',"Click to generate a URL in address bar for your inputs, so you can save & share the results.");
+$(".shareLink").attr('title',"Click to generate a URL in address bar with your inputs so you can save & share.");
 $('.shareLink').tooltip({'placement':'bottom'});
 
 // permanent link with hash, clicked

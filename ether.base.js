@@ -47,10 +47,6 @@ function getBTCprice(func) {
 }
 
 
-function convertUSD() {
-	
-}
-
 
 
 // Convert to all ether denominations
@@ -97,6 +93,11 @@ function convertBTC(input, options) {
 // figure 
 function figureBTCUnit(input) {
 	return input;
+}
+
+
+function convertUSD() {
+	
 }
 
 
@@ -229,4 +230,22 @@ function getHashParams() {
 
 	return hashParams;
 }
+
+// set cursor position on input
+$.fn.selectRange = function(start, end) {
+    if(start == -1) { start = $(this).val().length } // end of input
+	if(!end) end = start;
+    return this.each(function() {
+        if (this.setSelectionRange) {
+            this.focus();
+            this.setSelectionRange(start, end);
+        } else if (this.createTextRange) {
+            var range = this.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', end);
+            range.moveStart('character', start);
+            range.select();
+        }
+    });
+};
 

@@ -21,8 +21,7 @@ $(function () {
 		setEtherInput('gasprice',10,'szabo');
 	}
 	
-	$("#input-amount").focus();
-	
+	$("#input-amount").selectRange(-1); // focus
 	
 	// Get Bitcoin price
 	getBTCprice( function(btcprice) {
@@ -43,14 +42,16 @@ $(function () {
 // Selected value unit
 $("#dropdown-amount li a").click(function() {
 	setEtherInput('amount', null, $(this).text()); // todo: use val, not text...
-	$("#input-amount").focus();
+	
+	$("#input-amount").selectRange(-1); // focus
 	$('#go-btn').click(); return false;
 });
 
 // Selected gasprice unit
 $("#dropdown-gasprice li a").click(function() {
 	setEtherInput('gasprice', null, $(this).text()); // todo: use val, not text...
-	$("#input-gasprice").focus();
+	
+	$("#input-gasprice").selectRange(-1); // focus
 	$('#go-btn').click(); return false;
 });
 

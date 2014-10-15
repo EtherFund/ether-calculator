@@ -1,8 +1,8 @@
 /*
 - ether.calculator.js v0.1
 - GAS calculator
-- for http://ether.fund/tool/calculator
-- by @jrbedard
+- http://ether.fund/tool/calculator
+- (c) 2014 - J.R. Bédard - jrbedard.com
 */
 
 

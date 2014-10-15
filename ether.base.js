@@ -1,8 +1,8 @@
 /*
 - ether.base.js v0.1
 - Basic data structures and utilities to build ethereum tools & tutorials
-- for http://ether.fund
-- by @jrbedard
+- http://ether.fund
+- (c) 2014 - J.R. Bédard - jrbedard.com
 */
 
 const ETH_UNITS = {'wei':1e-18, 'Kwei':1e-15, 'Mwei':1e-12, 'Gwei':1e-9, 'szabo':1e-6, 'finney':1e-3, 
@@ -26,7 +26,7 @@ var ETH_FEES = {
 };
 
 
-const BTC_UNITS = {'satoshi':1e-8, 'bit':1e-6, 'BTC':1.0};
+const BTC_UNITS = {'satoshi':1e-8, 'bit':1e-6, 'millibit':1e-3, 'BTC':1.0};
 
 const SALE_PRICE = 2000.0; // Ethereum ether genesis sale, 1 BTC = 2000 ETH
 
@@ -34,6 +34,8 @@ var btcprice = 0.0; // BTC
 
 const FIAT_UNITS = {};
 
+
+BigNumber.config({ERRORS: false}); // ignore the 15digits limit
 
 
 function getBTCprice(func) {
@@ -128,10 +130,6 @@ function validateEtherInput(ids) {
 			continue;
 		}
 		if(isNaN(val)) {
-			$("#input-"+id+"-wrap").addClass("has-error");
-			continue;
-		}
-		if(val.length > 14) {
 			$("#input-"+id+"-wrap").addClass("has-error");
 			continue;
 		}

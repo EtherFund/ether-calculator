@@ -10,7 +10,7 @@ const ETH_UNITS = {'wei':1e-18, 'Kwei':1e-15, 'Mwei':1e-12, 'Gwei':1e-9, 'szabo'
 };
 
 // GAS
-var ETH_FEES = {
+const ETH_FEES = {
     'step':{'cost':1,'desc':"Default amount of gas to pay for an execution cycle."},
 	'stop': {'cost':0,'desc':'Nothing paid for the STOP operation.'},
     'suicide': {'cost':0,'desc':'Nothing paid for the SUICIDE operation.'},
@@ -26,13 +26,21 @@ var ETH_FEES = {
 };
 
 
+const ETH_LANGUAGES = {
+	'lll':{},
+	'mutan':{},
+	'serpent':{},
+};
+
 const BTC_UNITS = {'satoshi':1e-8, 'bit':1e-6, 'millibit':1e-3, 'BTC':1.0};
 
 const SALE_PRICE = 2000.0; // Ethereum ether genesis sale, 1 BTC = 2000 ETH
 
-var btcprice = 0.0; // BTC
-
 const FIAT_UNITS = {};
+
+
+var gBtcPrice = 0.0; // BTC
+
 
 
 BigNumber.config({ERRORS: false}); // ignore the 15digits limit
@@ -41,8 +49,8 @@ BigNumber.config({ERRORS: false}); // ignore the 15digits limit
 function getBTCprice(func) {
 	$.get('/api/btc_price', function(data) {
 		//btcprice = new BigNumber(data);
-		btcprice = data.toFixed(2);
-		func(btcprice);
+		gBtcPrice = data.toFixed(2);
+		func(gBtcPrice);
 	});
 }
 

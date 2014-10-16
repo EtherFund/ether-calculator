@@ -1,9 +1,14 @@
 /*
 - ether.calculator.js v0.1
-- GAS calculator
+- Transaction Cost Calculator for Ethereum
 - http://ether.fund/tool/calculator
 - (c) 2014 - J.R. Bédard - jrbedard.com
 */
+
+
+var gSubtotal = {value:0,unit:''};
+var gTotal = {value:0,unit:''};
+var gTotalBtc = {value:0,unit:''};
 
 
 // Init
@@ -121,10 +126,6 @@ function validate() {
 }
 
 
-var gSubtotal = {value:0,unit:''};
-var gTotal = {value:0,unit:''};
-var gTotalBtc = {value:0,unit:''};
-
 
 // calculate
 function calculate(input) {
@@ -168,7 +169,7 @@ function calculate(input) {
 
 
 	// Total USD
-	var usd = new BigNumber(btc.times(btcprice));
+	var usd = new BigNumber(btc.times(gBtcPrice));
 	setEtherInput('cost-total-usd', usd.noExponents(), "USD"); // Set total
 }
 

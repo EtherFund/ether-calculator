@@ -5,11 +5,12 @@
 - (c) 2014 - J.R. Bédard - jrbedard.com
 */
 
+// ether units
 const ETH_UNITS = {'wei':1e-18, 'Kwei':1e-15, 'Mwei':1e-12, 'Gwei':1e-9, 'szabo':1e-6, 'finney':1e-3, 
 	'ether':1.0, 'Kether':1e3, 'Mether':1e6, 'Gether':1e9, 'Tether':1e12
 };
 
-// GAS
+// gas costs
 const ETH_FEES = {
     'step':{'cost':1,'desc':"Default amount of gas to pay for an execution cycle."},
 	'stop': {'cost':0,'desc':'Nothing paid for the STOP operation.'},
@@ -25,13 +26,24 @@ const ETH_FEES = {
     'transaction': {'cost':500,'desc':'Paid for every transaction.'},
 };
 
-
+// contract languages
 const ETH_LANGUAGES = {
-	'lll':{},
-	'mutan':{},
-	'serpent':{},
+	'lll':{'name':"LLL", 'syntax':"Lisp",
+		'specs':"https://github.com/ethereum/cpp-ethereum/wiki/LLL",
+		'desc':"LLL is the Ethereum Low-level Lisp-like Language.",
+	},
+	'mutan':{'name':"Mutan", 'syntax':"C++",
+		'specs':"https://github.com/ethereum/go-ethereum/wiki/Mutan",
+		'desc':"Mutan is a C-Like language for the Ethereum project.",
+	},
+	'serpent':{'name':"Serpent", 'syntax':"Python",
+		'specs':"https://github.com/ethereum/wiki/wiki/Serpent",
+		'desc':"Serpent is designed to be very similar to Python.",
+	},
 };
 
+
+// btc
 const BTC_UNITS = {'satoshi':1e-8, 'bit':1e-6, 'millibit':1e-3, 'BTC':1.0};
 
 const SALE_PRICE = 2000.0; // Ethereum ether genesis sale, 1 BTC = 2000 ETH

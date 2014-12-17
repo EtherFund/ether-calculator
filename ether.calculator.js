@@ -2,7 +2,7 @@
 - ether.calculator.js v0.1
 - Transaction Cost Calculator for Ethereum
 - http://ether.fund/tool/calculator
-- (c) 2014 - J.R. Bédard - jrbedard.com
+- (c) 2014 J.R. Bédard (jrbedard.com)
 */
 
 
@@ -13,9 +13,8 @@ var gTotalBtc = {value:0,unit:''};
 
 // Init
 $(function () {
-	var hash = document.location.hash
-	if(hash) {
-		var params = getHashParams(); // from URL hash
+	var params = getHashParams();
+	if(params) {
 		setEtherInput('amount', params['av'], params['au']);
 		$("#input-gas").val(params['gv']);
 		setEtherInput('gasprice', params['gpv'], params['gpu']); // from URL hash
@@ -83,27 +82,27 @@ $("#go-btn").click(function() {
 
 
 // Selected OUTPUT subtotal unit
-$("#dropdown-gas-subtotal li a").click(function() {
+$("#dropdown-gas-subtotal li a").click(function(e) {
 	var unit = $(this).text();
 	var output = convertEther(gSubtotal, null); // convert
 	setEtherInput('gas-subtotal', output[unit], unit); // display in unit
-	return true; // todo: no #
+	e.preventDefault();
 });
 
 // Selected OUTPUT total unit
-$("#dropdown-cost-total li a").click(function() {
+$("#dropdown-cost-total li a").click(function(e) {
 	var unit = $(this).text();
 	var output = convertEther(gTotal, null); // convert
 	setEtherInput('cost-total', output[unit], unit);
-	return true; // todo: no #
+	e.preventDefault();
 });
 
 // Selected OUTPUT total btc unit
-$("#dropdown-cost-total-btc li a").click(function() {
+$("#dropdown-cost-total-btc li a").click(function(e) {
 	var unit = $(this).text();
 	var output = convertBTC(gTotalBtc, null); // convert
 	setEtherInput('cost-total-btc', output[unit], unit);
-	return true; // todo: no #
+	e.preventDefault();
 });
 
 
@@ -133,15 +132,12 @@ function calculate(input) {
 	var gas = input['gas'];
 	var gasprice = input['gasprice'];
 	
-	
 	// Gas subtotal
 	gSubtotal['value'] = new BigNumber(gas['value']).times(gasprice['value']);
 	gSubtotal['unit'] = gasprice['unit'];
 	gSubtotal = figureEtherUnit(gSubtotal);
 	
 	setEtherInput('gas-subtotal', gSubtotal['value'].noExponents(), gSubtotal['unit']); // Set gas cost sub-total
-	
-	
 	
 	// Total
 	var output = convertEther(gSubtotal, null); // convert
@@ -151,7 +147,6 @@ function calculate(input) {
 	gTotal = figureEtherUnit(gTotal);
 	
 	setEtherInput('cost-total', gTotal['value'].noExponents(), gTotal['unit']); // Set total
-	
 	
 	
 	// Total BTC
@@ -167,15 +162,10 @@ function calculate(input) {
 	setEtherInput('cost-total-btc', gTotalBtc['value'].noExponents(), gTotalBtc['unit']); // Set total
 
 
-
 	// Total USD
 	var usd = new BigNumber(btc.times(gBtcPrice));
 	setEtherInput('cost-total-usd', usd.noExponents(), "USD"); // Set total
 }
-
-
-
-
 
 
 
